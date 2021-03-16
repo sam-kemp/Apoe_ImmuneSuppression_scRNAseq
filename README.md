@@ -1,6 +1,6 @@
 # Apoe_ImmuneSuppression_scRNAseq
 
-This script reproduces Figure 1A-I, Supplementary Figure 1A,B,C,G,H, Figure 2 E,F, Supplementary Figure 2A,C, Supplementary Figure 6C, and Supplementary Figure 7A,C in the manuscript entitled "Apolipoprotein E promotes immune suppression through NF-kB mediated CXCL1 production in pancreatic cancer"
+This script reproduces Figure 1A-I, Supplementary Figure 1A,B,C,G,H, Figure 2 E,F, Supplementary Figure 2A,C, Supplementary Figure 6C, and Supplementary Figure 7A,C in the manuscript entitled "Apolipoprotein E promotes immune suppression through NF-kB mediated CXCL1 production in pancreatic cancer".
 
 Code was adapted from Steele, N. G., et al. (2020). "Multimodal mapping of the tumor and peripheral blood immune landscape in human pancreatic cancer." Nature Cancer 1(11): 1097-1112.
 
