@@ -7,4 +7,4 @@ Code was adapted from Steele, N. G., et al. (2020). "Multimodal mapping of the t
 Processed data for the human pancreatic cancer single cell RNA sequencing dataset are available at NIH Gene Expression Omnibus (GEO) database under the accession GSE155698 and raw data are available at the NIH dbGaP database under the accession phs002071.v1.p1 (Steele et al., 2020). Raw and processed data for the orthotopic KPC and normal mouse pancreas single cell RNA sequencing datasets are available at GEO under the accession GSE158356. 
 
 -Sam Kemp
--March 16, 2021
+(March 16, 2021)
