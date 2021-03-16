@@ -1,1 +1,130 @@
-###This script replicates the single cell RNA sequencing plots in figures 
+#This script replicates the single cell RNA sequencing plots in the manuscript entitled "Apolipoprotein E promotes immune suppression through NF-kB mediated CXCL1 production in pancreatic cancer"
+#The script reproduces Figure 1A-I, Supplementary Figure 1A,B,C,G,H, Figure 2 E,F, Supplementary Figure 2A,C, Supplementary Figure 6C, and Supplementary Figure 7A,C
+#Data were processed in line with the Seurat pipeline (https://satijalab.org/seurat/archive/v3.2/pbmc3k_tutorial.html)
+#Code was adapted from Steele, N. G., et al. (2020). "Multimodal mapping of the tumor and peripheral blood immune landscape in human pancreatic cancer." Nature Cancer 1(11): 1097-1112.
+
+#Load in required packages
+library(Seurat)
+library(dplyr)
+library(magrittr)
+library(data.table)
+library(Matrix)
+library(devtools)
+library(RcppArmadillo)
+library(Rcpp)
+library(harmony)
+library(scales)
+library(pheatmap)
+library(gplots)
+library(ggplot2)
+library(cowplot)
+
+#Batch correction using harmony
+install_github("immunogenomics/harmony")
+devtools::install_github("immunogenomics/harmony")
+library(harmony)
+
+#This manuscript utilized previously published datasets
+#Code use for data visualization is as follows:
+
+#Figure 1A
+DimPlot(TotalTissue.combined, reduction = "umap", label = FALSE, pt.size = 0.5, split.by = "DiseaseState", cols = c("CD8 T Cells" = "darkgreen", 
+                                           "CD4 T Cells" = "thistle", 
+                                           "Myeloid" = "navy", 
+                                           "Dendritic Cell" = "paleturquoise4", 
+                                           "Mast Cells" = "deeppink", 
+                                           "NK Cells" = "darkorchid", 
+                                           "B Cells" = "gold", 
+                                           "Plasma Cells" = "azure2", 
+                                           "Fibroblast" = "navy", 
+                                           "Acinar" = "royalblue", 
+                                           "Endothelial" = "indianred", 
+                                           'Epithelial' = "mediumorchid3",
+                                           "Acinar" = "thistle",
+                                           "Endocrine" = "tan4"))
+                                           
+#Figure 1B
+DotPlot(TotalTissue.combined, features = c("APOE"), cols = c("blue", "red"))
+
+#Figure 1C,D,E
+#Human myeloid object is from Steele, N. G., et al. (2020). "Multimodal mapping of the tumor and peripheral blood immune landscape in human pancreatic cancer." Nature Cancer 1(11): 1097-1112.
+DimPlot(Myeloid_subset, reduction = "umap", pt.size = 1, label = F, cols=c("Granulocytes" = "navy", "Monocytes" = "orange2", "Resident Macrophages" = "darkorchid", "Alternatively Activated Macrophages" = "darkgreen"))
+FeaturePlot(Myeloid_subset, features = c("APOE"), reduction = "umap", pt.size = .5)
+
+#Figure 1E
+Idents(Myeloid_subset) <- "DiseaseState"
+levels(Myeloid_subset) 
+VlnPlot(Myeloid_subset, features = c("APOE"), cols = c("navy", "grey"), pt.size = 0.1)
+
+#Figure 1F,G,H
+DimPlot(Fibroblast_subset, reduction = "umap", pt.size = 1, label = F, cols=c("myCAF" = "navy", "iCAF" = "darkorchid")
+VlnPlot(Fibroblast_subset, features = c("APOE"), cols = c("navy", "darkorchid"))
+Idents(Fibroblast_subset) <- "DiseaseState"
+levels(Fibroblast_subset) 
+VlnPlot(Fibroblast_subset, features = c("APOE"), cols = c("navy", "grey"), pt.size = 0.1)
+
+#Figure 1I
+Idents(Monocyte_subset) <- "DiseaseState"
+levels(Monocyte_subset) 
+VlnPlot(Monocyte_subset, features = c("APOE"), cols = c("navy", "grey"), pt.size = 0.1)
+
+#Supplementary Figure 1A
+FeaturePlot(TotalTissue.combined, features = c("APOE"), reduction = "umap", pt.size = .5)
+
+#Supplementary Figure 1B
+DotPlot(Myeloid_subset, features = c("CD68", "CD14", "LYZ", "VCAN", "CCR2", "C1QA", "RGS1", "MARCO", "SPP1", "CXCR2", "S100A8", "FCGR3B"), cols = c("blue", "red"), dot.scale = 7) + RotatedAxis() + FontSize(x.text = 17, y.text = 17)
+
+#Supplementary Figure 1C
+gene_list <- c("ACTA2", "TAGLN", "POSTN", "C3", "DPT", "APOE")
+iCAF_myCAF <- FetchData(Fibroblast_subset, vars = c(gene_list, 'Collapsed_labels_iCAFmyCAF'))
+
+patient_avg <- data.frame()
+n <-  1# number of metadata columns
+
+for (id in levels(factor(iCAF_myCAF$Collapsed_labels_iCAFmyCAF))) {
+  data_subset <- iCAF_myCAF %>% filter(Collapsed_labels_iCAFmyCAF == id)
+  data_subset_avg <- apply(data_subset[,1:(ncol(data_subset)-n)], 2, mean)
+  patient_avg <- rbind(patient_avg, data_subset_avg)
+}
+
+colnames(patient_avg) <- colnames(iCAF_myCAF)[1:(ncol(iCAF_myCAF)-n)]
+rownames(patient_avg) <- levels(factor(iCAF_myCAF$Collapsed_labels_iCAFmyCAF))
+
+metadata <- unique(iCAF_myCAF %>% select('DiseaseState', 'ID'))
+metadata <- metadata[order(metadata$DiseaseState, decreasing = T),]
+rownames(metadata) <- metadata$ID
+metadata$ID <- NULL
+
+my_colour = list(Collapsed_labels_iCAFmyCAF = c(myCAF = "#080808", iCAF = "#D8D5D5"))
+
+pheatmap(as.matrix(patient_avg), fontsize = 14, color = colorRampPalette(colors = c('#0000FF','#FFFFFF','#FF0000'))(250), border_color = 'black', cellwidth = 20, cellheight = 40, scale = 'row',
+         annotation_colors = my_colour)
+
+#Supplementary Figure 1G,H
+DimPlot(Monocyte_subset, reduction = "umap", pt.size = 1, label = F, cols = c("Monocyte 1" = "green4", "Monocyte 2" = "goldenrod1", "Monocyte 3" = "dodgerblue", "Monocyte 4" = "firebrick1"))
+FeaturePlot(Monocyte_subset, features = c("APOE"), reduction = "umap", pt.size = .5)
+
+#Figure 2E,F
+DimPlot(Ortho_KPC, reduction = "umap", pt.size = 0.75, label = F, 
+        cols = c("B cells" = "firebrick1", "Fibroblasts" = "darkgreen", "T cells" = "deeppink", "Acinar" = "thistle",
+                "NK cells" = "orange2", "DCs" = "navy", "Macrophages" = "dodgerblue", "Granulocytes" = "goldenrod1",
+                 "Epithelial" = "darkorchid"))
+VlnPlot(Ortho_KPC, features = c("Apoe"), cols = c("navy", "grey"), pt.size = 0.1, cols = c("B cells" = "firebrick1", "Fibroblasts" = "darkgreen", "T cells" = "deeppink", "Acinar" = "thistle",
+                "NK cells" = "orange2", "DCs" = "navy", "Macrophages" = "dodgerblue", "Granulocytes" = "goldenrod1",
+                 "Epithelial" = "darkorchid")
+                 
+#Supplementary Figure 2A
+DotPlot(OT.Ortho_KPC, features = c("Cd79a", "Ms4a1", "Batf3","H2-Aa", "Cd68", "Cd14", "Adgre1", "Cxcr2", "S100a8", "Itgam", "Nkg7","Col1a1", "Dcn", "Cd3e", "Spink1", "Epcam",  "Krt19"), dot.scale = 7) + RotatedAxis() + FontSize(x.text = 17, y.text = 17)
+Idents(NPanc_OT_macs) <- "sample_type"
+levels(NPanc_OT_macs) 
+VlnPlot(NPanc_OT_macs, features = c("Apoe"), cols = c("grey", "navy"), pt.size = 0.1)
+
+#Supplementary Figure 6C
+DotPlot(Ortho_KPC, features = c("Cxcl1", "Cxcl2", "Cxcl5"), cols = c("blue", "red"))
+
+#Supplementary Figure 7A,C
+DotPlot(OT.Ortho_KPC, features = c("Ldlr", "Lrp1", "Lrp8"), cols = c("blue", "red"), dot.scale = 7) + RotatedAxis() + FontSize(x.text = 17, y.text = 17)
+VlnPlot(TotalTissue.combined, features = c("LDLR"), pt.size = 0.1)
+
+
+
