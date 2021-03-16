@@ -33,14 +33,14 @@ DimPlot(TotalTissue.combined, reduction = "umap", label = FALSE, pt.size = 0.5, 
                                            "Myeloid" = "navy", 
                                            "Dendritic Cell" = "paleturquoise4", 
                                            "Mast Cells" = "deeppink", 
-                                           "NK Cells" = "darkorchid", 
+                                           "NK Cells" = "deeppink", 
                                            "B Cells" = "gold", 
                                            "Plasma Cells" = "azure2", 
                                            "Fibroblast" = "navy", 
                                            "Acinar" = "royalblue", 
                                            "Endothelial" = "indianred", 
                                            'Epithelial' = "mediumorchid3",
-                                           "Acinar" = "thistle",
+                                           "Acinar" = "dodgerblue",
                                            "Endocrine" = "tan4"))
                                            
 #Figure 1B
