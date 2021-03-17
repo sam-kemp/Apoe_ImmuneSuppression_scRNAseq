@@ -28,20 +28,19 @@ library(harmony)
 #Code use for data visualization is as follows:
 
 #Figure 1A
-DimPlot(TotalTissue.combined, reduction = "umap", label = FALSE, pt.size = 0.5, split.by = "DiseaseState", cols = c("CD8 T Cells" = "darkgreen", 
-                                           "CD4 T Cells" = "thistle", 
-                                           "Myeloid" = "navy", 
-                                           "Dendritic Cell" = "paleturquoise4", 
-                                           "Mast Cells" = "deeppink", 
-                                           "NK Cells" = "deeppink", 
-                                           "B Cells" = "gold", 
-                                           "Plasma Cells" = "azure2", 
-                                           "Fibroblast" = "navy", 
-                                           "Acinar" = "royalblue", 
-                                           "Endothelial" = "indianred", 
-                                           'Epithelial' = "mediumorchid3",
-                                           "Acinar" = "dodgerblue",
-                                           "Endocrine" = "tan4"))
+DimPlot(object = TotalTissue.combined, reduction = "umap", pt.size = 0.5, label = F, cols = c("CD8 T Cells" = "darkgreen", 
+                                                                                                          "CD4 T Cells" = "thistle", 
+                                                                                                          "Myeloid" = "navy", 
+                                                                                                          "Dendritic Cell" = "limegreen", 
+                                                                                                          "Mast Cells" = "paleturquoise4", 
+                                                                                                          "NK Cells" = "deeppink", 
+                                                                                                          "B Cells" = "gold", 
+                                                                                                          "Plasma Cells" = "darkcyan", 
+                                                                                                          "Fibroblast" = "darkorange", 
+                                                                                                          "Acinar" = "royalblue", 
+                                                                                                          "Endothelial" = "firebrick1", 
+                                                                                                          'Epithelial' = "mediumorchid3",
+                                                                                                          "Endocrine" = "brown") , split.by = c("DiseaseState"))
                                            
 #Figure 1B
 DotPlot(TotalTissue.combined, features = c("APOE"), cols = c("blue", "red"))
