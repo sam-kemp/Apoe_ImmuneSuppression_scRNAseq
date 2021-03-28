@@ -47,7 +47,7 @@ DotPlot(TotalTissue.combined, features = c("APOE"), cols = c("blue", "red"))
 
 #Figure 1C,D,E
 #Human myeloid object is from Steele, N. G., et al. (2020). "Multimodal mapping of the tumor and peripheral blood immune landscape in human pancreatic cancer." Nature Cancer 1(11): 1097-1112.
-DimPlot(Myeloid_subset, reduction = "umap", pt.size = 1, label = F, cols=c("Granulocytes" = "navy", "Monocytes" = "orange2", "Resident Macrophages" = "darkorchid", "Alternatively Activated Macrophages" = "darkgreen"))
+DimPlot(Myeloid_subset, reduction = "umap", pt.size = 1, label = F, cols=c("Granulocytes" = "navy", "Myeloid" = "orange2", "Resident Macrophages" = "darkorchid", "Alternatively Activated Macrophages" = "darkgreen"))
 FeaturePlot(Myeloid_subset, features = c("APOE"), reduction = "umap", pt.size = .5)
 
 #Figure 1E
